@@ -1,2 +1,149 @@
-# pubcrawl
-Elif's bday pubcrawl
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bar Crawl Passport</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: white;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+#progress {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 18px;
+}
+
+.bar {
+    background: #222;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.locked {
+    opacity: 0.25;
+}
+
+.completed {
+    background: #1f6f3e;
+}
+
+button {
+    background: #f5a623;
+    color: black;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+#finished {
+    display: none;
+    text-align: center;
+    margin-top: 30px;
+    font-size: 24px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🍺 Prague Bar Crawl</h1>
+
+<div id="progress"></div>
+
+<div id="bars"></div>
+
+<div id="finished">
+    🎉 Congratulations! You've completed the crawl!
+</div>
+
+<script>
+
+const bars = [
+    "Bar 1",
+    "Bar 2",
+    "Bar 3",
+    "Bar 4",
+    "Bar 5"
+];
+
+let currentBar = Number(localStorage.getItem("currentBar")) || 0;
+
+function renderBars() {
+
+    const container = document.getElementById("bars");
+    const progress = document.getElementById("progress");
+
+    container.innerHTML = "";
+
+    progress.innerHTML =
+        `Progress: ${Math.min(currentBar, bars.length)} / ${bars.length}`;
+
+    bars.forEach((bar, index) => {
+
+        const div = document.createElement("div");
+        div.classList.add("bar");
+
+        if (index < currentBar) {
+
+            div.classList.add("completed");
+            div.innerHTML = `
+                <h2>✅ ${bar}</h2>
+                <p>Completed</p>
+            `;
+
+        } else if (index === currentBar) {
+
+            div.innerHTML = `
+                <h2>🍺 ${bar}</h2>
+                <p>Current stop</p>
+                <button onclick="completeBar()">Completed 🍺</button>
+            `;
+
+        } else {
+
+            div.classList.add("locked");
+            div.innerHTML = `
+                <h2>🔒 ${bar}</h2>
+            `;
+        }
+
+        container.appendChild(div);
+    });
+
+    if (currentBar >= bars.length) {
+        document.getElementById("finished").style.display = "block";
+    }
+}
+
+function completeBar() {
+    currentBar++;
+    localStorage.setItem("currentBar", currentBar);
+    renderBars();
+}
+
+renderBars();
+
+</script>
+
+</body>
+</html>
