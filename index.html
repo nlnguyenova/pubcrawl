@@ -1,149 +1,746 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bar Crawl Passport</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELIF'S BDAY CRAWL</title>
 
-<style>
-body {
-    font-family: Arial, sans-serif;
-    background: #F7F1E3;
-    color: white;
-    margin: 0;
-    padding: 20px;
-}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
-h1 {
-    text-align: center;
-}
+  <style>
+    :root {
+      --cream: #f4eddd;
+      --foam: #f8f4e9;
+      --brown: #4b2416;
+      --brown-soft: #6b3a28;
+      --yellow: #d6aa3f;
+      --yellow-light: #f0d783;
+      --blue: #7d9ea8;
+      --burgundy: #6d1722;
+      --shadow: rgba(75, 36, 22, 0.22);
+    }
 
-#progress {
-    text-align: center;
-    margin-bottom: 25px;
-    font-size: 18px;
-}
+    * {
+      box-sizing: border-box;
+    }
 
-.bar {
-    background: #222;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 15px;
-    transition: all 0.3s ease;
-}
+    html {
+      scroll-behavior: smooth;
+    }
 
-.locked {
-    opacity: 0.25;
-}
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 15% 8%, rgba(214,170,63,.18), transparent 20%),
+        radial-gradient(circle at 90% 20%, rgba(125,158,168,.18), transparent 22%),
+        linear-gradient(180deg, var(--cream), #efe3cd);
+      color: var(--brown);
+      font-family: Inter, system-ui, sans-serif;
+      overflow-x: hidden;
+    }
 
-.completed {
-    background: #1f6f3e;
-}
+    .paper {
+      position: relative;
+      width: min(980px, 100%);
+      margin: 0 auto;
+      padding: 28px 14px 120px;
+      min-height: 100vh;
+    }
 
-button {
-    background: #f5a623;
-    color: black;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-top: 10px;
-}
+    .paper::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .25;
+      background-image:
+        repeating-linear-gradient(90deg, transparent 0 32px, rgba(75,36,22,.025) 32px 34px),
+        repeating-linear-gradient(0deg, transparent 0 32px, rgba(75,36,22,.025) 32px 34px);
+      mix-blend-mode: multiply;
+    }
 
-button:hover {
-    opacity: 0.9;
-}
+    .faint-map {
+      display: none;
+    }
 
-#finished {
-    display: none;
-    text-align: center;
-    margin-top: 30px;
-    font-size: 24px;
-}
-</style>
+    header {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 22px 10px 8px;
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: .34em;
+      font-weight: 800;
+      color: var(--blue);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(42px, 10vw, 94px);
+      line-height: .88;
+      letter-spacing: .055em;
+      color: var(--yellow-light);
+      text-shadow:
+        2px 2px 0 var(--brown),
+        -2px 2px 0 var(--brown),
+        2px -2px 0 var(--brown),
+        -2px -2px 0 var(--brown),
+        0 8px 0 rgba(75,36,22,.08);
+    }
+
+    .subtitle {
+      margin: 12px auto 0;
+      max-width: 640px;
+      font-size: 13px;
+      line-height: 1.6;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--brown-soft);
+    }
+
+    .top-controls {
+      position: relative;
+      top: auto;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      gap: clamp(20px, 7vw, 74px);
+      padding: 14px 10px 12px;
+      margin: 8px auto 16px;
+      background: rgba(244,237,221,.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(75,36,22,.12);
+    }
+
+    .control-btn {
+      border: 0;
+      background: transparent;
+      color: rgba(75,36,22,.74);
+      padding: 4px 0;
+      border-radius: 0;
+      font-weight: 400;
+      font-size: 12px;
+      letter-spacing: .14em;
+      text-transform: lowercase;
+      box-shadow: none;
+      cursor: pointer;
+      font-family: Inter, system-ui, sans-serif;
+    }
+
+    .control-btn strong {
+      color: var(--brown);
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .control-btn:hover {
+      color: var(--brown);
+      text-decoration: underline;
+      text-underline-offset: 5px;
+    }
+
+    .reset {
+      background: transparent;
+    }
+
+    .progress-wrap {
+      position: relative;
+      z-index: 2;
+      width: min(620px, 92%);
+      margin: 12px auto 18px;
+      border: 1.5px solid var(--brown);
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--foam);
+      box-shadow: none;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 14px;
+      background: linear-gradient(90deg, var(--yellow), var(--blue));
+      transition: width .35s ease;
+    }
+
+    .progress-text {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      font-weight: 900;
+      font-size: 12px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+    }
+
+    .map {
+      position: relative;
+      z-index: 2;
+      width: min(820px, 100%);
+      height: 2940px;
+      margin: 0 auto;
+    }
+
+    .route-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .route-bg {
+      fill: none;
+      stroke: rgba(75,36,22,.34);
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-dasharray: 2 18;
+    }
+
+    .route-done {
+      fill: none;
+      stroke: var(--yellow);
+      stroke-width: 7;
+      stroke-linecap: round;
+      stroke-dasharray: 2 18;
+      filter: drop-shadow(0 0 3px rgba(214,170,63,.45));
+      transition: stroke-dashoffset .5s ease;
+    }
+    .landmark { display: none; }
+
+
+    .stop {
+      position: absolute;
+      z-index: 5;
+      width: 172px;
+      min-height: 106px;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      transition: transform .25s ease, opacity .25s ease, filter .25s ease;
+    }
+
+    .stop button {
+      all: unset;
+      display: block;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .marker {
+      width: 68px;
+      height: 68px;
+      margin: 0 auto 8px;
+      border: 2px solid var(--brown);
+      border-radius: 50%;
+      background: var(--foam);
+      box-shadow: 0 8px 20px rgba(75,36,22,.08);
+      display: grid;
+      place-items: center;
+      position: relative;
+      transition: .25s ease;
+    }
+
+    .number {
+      position: absolute;
+      top: -10px;
+      right: -8px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--brown);
+      color: var(--foam);
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .martini {
+      width: 35px;
+      height: 35px;
+    }
+
+    .stop-name {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-weight: 700;
+      font-size: 19px;
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--brown);
+      background: rgba(244,237,221,.72);
+      border-radius: 12px;
+      padding: 4px 7px;
+    }
+
+    .stop.locked {
+      opacity: .24;
+      filter: grayscale(.4);
+    }
+
+    .stop.locked button {
+      cursor: not-allowed;
+    }
+
+    .stop.completed .marker {
+      background: var(--brown);
+      color: var(--foam);
+    }
+
+    .stop.completed .martini path,
+    .stop.completed .martini line,
+    .stop.completed .martini polyline {
+      stroke: var(--yellow-light);
+    }
+
+    .stop.active {
+      opacity: 1;
+      filter: none;
+      transform: translate(-50%, -50%) scale(1.05);
+    }
+
+    .stop.active .marker {
+      background: var(--yellow-light);
+      box-shadow: 0 0 0 7px rgba(214,170,63,.18), 0 10px 24px rgba(75,36,22,.10);
+      animation: pulse 1.4s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .side-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 60;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      border: 1px solid rgba(75,36,22,.28);
+      background: rgba(248,244,233,.92);
+      color: rgba(75,36,22,.75);
+      font-weight: 400;
+      letter-spacing: .18em;
+      font-size: 10px;
+      text-transform: lowercase;
+      padding: 18px 8px;
+      border-radius: 10px 0 0 10px;
+      box-shadow: none;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      min-height: 168px;
+    }
+
+    .side-nav strong {
+      color: var(--brown);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .20em;
+    }
+
+    .side-left {
+      left: 0;
+      border-left: 0;
+      border-radius: 0 10px 10px 0;
+      transform: translateY(-50%) rotate(180deg);
+    }
+
+    .side-right {
+      right: 0;
+      border-right: 0;
+      border-radius: 10px 0 0 10px;
+    }
+
+    .side-nav:hover {
+      background: var(--foam);
+      color: var(--brown);
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(75,36,22,.48);
+      display: none;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .modal.show {
+      display: grid;
+    }
+
+    .card {
+      position: relative;
+      width: min(460px, 96vw);
+      background:
+        radial-gradient(circle at 12% 15%, rgba(214,170,63,.22), transparent 28%),
+        linear-gradient(180deg, var(--foam), var(--cream));
+      border: 2px solid var(--brown);
+      border-radius: 24px;
+      padding: 26px 22px 20px;
+      box-shadow: 0 24px 80px rgba(75,36,22,.35);
+      text-align: center;
+    }
+
+    .close {
+      position: absolute;
+      right: 14px;
+      top: 10px;
+      border: none;
+      background: transparent;
+      color: var(--brown);
+      font-size: 28px;
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .card h2 {
+      margin: 10px 28px 10px;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 34px;
+      line-height: .94;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .label {
+      margin-top: 18px;
+      font-size: 11px;
+      letter-spacing: .24em;
+      font-weight: 900;
+      color: var(--blue);
+      text-transform: uppercase;
+    }
+
+    .address, .task {
+      line-height: 1.5;
+      font-size: 15px;
+      margin: 6px 0 0;
+    }
+
+    .task {
+      font-weight: 800;
+      font-size: 17px;
+    }
+
+    .card-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 9px;
+      margin-top: 22px;
+    }
+
+    .primary, .secondary {
+      border: 1.5px solid var(--brown);
+      border-radius: 999px;
+      padding: 12px 14px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+      color: var(--brown);
+      box-shadow: none;
+    }
+
+    .primary {
+      background: var(--yellow-light);
+    }
+
+    .secondary {
+      background: var(--foam);
+    }
+
+    .finished {
+      display: none;
+      position: relative;
+      z-index: 3;
+      margin: 30px auto;
+      width: min(620px, 92%);
+      text-align: center;
+      background: var(--burgundy);
+      color: var(--foam);
+      border: 2px solid var(--brown);
+      border-radius: 26px;
+      padding: 28px 20px;
+      box-shadow: 7px 9px 0 rgba(75,36,22,.35);
+    }
+
+    .finished h2 {
+      margin: 0 0 8px;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 44px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--yellow-light);
+    }
+
+    @media (max-width: 720px) {
+      .map {
+        height: 3140px;
+      }
+
+      .stop {
+        width: 142px;
+      }
+
+      .marker {
+        width: 58px;
+        height: 58px;
+      }
+
+      .stop-name {
+        font-size: 15px;
+      }
+
+      .side-nav {
+        font-size: 9px;
+        padding: 10px 7px;
+      }
+
+      .top-controls {
+        gap: 12px;
+        padding-left: 34px;
+        padding-right: 34px;
+      }
+
+      .control-btn {
+        font-size: 9px;
+        letter-spacing: .09em;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="paper">
 
-<h1>🍺 Prague Bar Crawl</h1>
+    <header>
+      <div class="eyebrow">one night · seventeen stops · no mercy</div>
+      <h1>ELIF'S<br>BDAY CRAWL</h1>
+      <p class="subtitle">Tap the glowing stop, reveal the task, complete it, and unlock the next disaster.</p>
+    </header>
 
-<div id="progress"></div>
+    <div class="top-controls">
+      <button class="control-btn" onclick="goBack()">losers go <strong>BACK</strong></button>
+      <button class="control-btn reset" onclick="restartCrawl()">absolute units go <strong>AGAIN</strong></button>
+      <button class="control-btn" onclick="goNext()">legends go <strong>NEXT</strong></button>
+    </div>
 
-<div id="bars"></div>
+    <div class="progress-wrap"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText"></div>
 
-<div id="finished">
-    🎉 Congratulations! You've completed the crawl!
-</div>
+    <button class="side-nav side-left" onclick="goBack()">losers go <strong>BACK</strong></button>
+    <button class="side-nav side-right" onclick="goNext()">legends go <strong>NEXT</strong></button>
 
-<script>
+    <main class="map" id="map">
+      <svg class="route-svg" viewBox="0 0 820 2940" preserveAspectRatio="none" aria-hidden="true">
+        <path id="routePathBg" class="route-bg"
+          d="M410 75
+             C220 175, 170 300, 330 420
+             C540 575, 660 670, 470 825
+             C260 995, 140 1090, 315 1240
+             C520 1415, 680 1510, 510 1685
+             C330 1870, 145 1970, 305 2140
+             C510 2355, 675 2450, 500 2635
+             C430 2710, 395 2790, 410 2875" />
+        <path id="routePathDone" class="route-done"
+          d="M410 75
+             C220 175, 170 300, 330 420
+             C540 575, 660 670, 470 825
+             C260 995, 140 1090, 315 1240
+             C520 1415, 680 1510, 510 1685
+             C330 1870, 145 1970, 305 2140
+             C510 2355, 675 2450, 500 2635
+             C430 2710, 395 2790, 410 2875" />
+      </svg>
+    </main>
 
-const bars = [
-    "Bar 1",
-    "Bar 2",
-    "Bar 3",
-    "Bar 4",
-    "Bar 5"
-];
+    <section class="finished" id="finished">
+      <h2>Prague Conquered</h2>
+      <p>All roads finished at Bullerbyn. Elif's birthday crawl has been survived.</p>
+    </section>
+  </div>
 
-let currentBar = Number(localStorage.getItem("currentBar")) || 0;
+  <div class="modal" id="modal" onclick="outsideClose(event)">
+    <div class="card">
+      <button class="close" onclick="closeModal()">×</button>
+      <div id="modalNumber" class="eyebrow"></div>
+      <h2 id="modalName"></h2>
+      <div class="label">Address</div>
+      <p class="address" id="modalAddress"></p>
+      <div class="label">Task</div>
+      <p class="task" id="modalTask"></p>
+      <div class="card-actions">
+        <a class="secondary" id="mapsLink" href="#" target="_blank" rel="noopener">Open Maps</a>
+        <button class="primary" onclick="completeCurrent()">Completed</button>
+      </div>
+    </div>
+  </div>
 
-function renderBars() {
+  <script>
+    const stops = [
+      { name: "The Golden Eye", address: "Pařížská 30, 110 00 Josefov", task: "Nice drink to start with", x: 50, y: 2.6 },
+      { name: "La Bodeguita del Medio", address: "Kaprova 19/5, 110 00 Staré Město", task: "Choose a drink for someone else", x: 28, y: 8.9 },
+      { name: "Hany Bany Bar", address: "Veleslavínova 58, 110 00 Staré Město", task: "We're drinking BOUCHANÁ. Roll a dice and that's how many you need to drink before we leave.", x: 42, y: 14.7 },
+      { name: "Durty Nelly’s", address: "Melantrichova 472/12, 110 00 Staré Město", task: "A pint to chug", x: 68, y: 20.5 },
+      { name: "Popocafepetl", address: "Michalská 15, 110 00 Staré Město", task: "Chupitos. Roll a dice and that's how many you need to drink before we leave.", x: 58, y: 27.9 },
+      { name: "Champagneria", address: "Průchodní 4, 110 00 Staré Město", task: "Drink with your NON DOMINANT HAND", x: 30, y: 34.6 },
+      { name: "Al Capone’s Bar", address: "Bartolomějská 305, 110 00 Staré Město", task: "6 pack of smrtičky for WHOEVER GOES TO THE TOILET", x: 20, y: 41.8 },
+      { name: "Jericho kavárna", address: "Opatovická 154/26, 110 00 Nové Město", task: "Chubby Bunny game", x: 44, y: 48.3 },
+      { name: "U Sudu", address: "Vodičkova 677/10, 110 00 Nové Město", task: "Finish your pint in less than 3 sips. No one wants to be here long.", x: 68, y: 54.1 },
+      { name: "Kontakt Bar", address: "Navrátilova 667/4, 110 00 Nové Město", task: "ONLY FANS CAREER shot for good future", x: 58, y: 61.4 },
+      { name: "Cafe bar Kolíbka", address: "Řeznická 1891/10, 110 00 Nové Město", task: "Honestly, anything here is rogue", x: 32, y: 68.1 },
+      { name: "Gossip Bar", address: "Štěpánská 538/11, 120 00 Nové Město", task: "This is really just a stop over for the walk uphill. PLAY THE TAP TAP GAME", x: 20, y: 75.2 },
+      { name: "BERLIN BAR", address: "Lublaňská 646/59, 120 00 Vinohrady", task: "A mandatory group or solo KARAOKE", x: 42, y: 81.5 },
+      { name: "Waid cafe bar", address: "Lublaňská 57, 120 00 Nové Město", task: "LEMON DROP shots", x: 66, y: 86.8 },
+      { name: "De Fakto bar", address: "Korunní 17, 120 00 Vinohrady", task: "Again, really just a stop over.", x: 58, y: 91.2 },
+      { name: "ON Bar", address: "Korunní 17, 120 00 Vinohrady", task: "Survive", x: 43, y: 94.9 },
+      { name: "Bullerbyn", address: "Chodská 1123, Vinohrady, 120 00 Praha", task: "All the roads seem to finish here.", x: 50, y: 98.1 }
+    ];
 
-    const container = document.getElementById("bars");
-    const progress = document.getElementById("progress");
+    let current = Number(localStorage.getItem("elifCurrentStop")) || 0;
+    let selectedIndex = current;
 
-    container.innerHTML = "";
+    const map = document.getElementById("map");
+    const modal = document.getElementById("modal");
+    const routeDone = document.getElementById("routePathDone");
 
-    progress.innerHTML =
-        `Progress: ${Math.min(currentBar, bars.length)} / ${bars.length}`;
+    const martiniSVG = `
+      <svg class="martini" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M14 10h36L34 30c-1.2 1.5-3.8 1.5-5 0L14 10Z" fill="none" stroke="#4b2416" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M23 18h18" stroke="#4b2416" stroke-width="2.4" stroke-linecap="round"/>
+        <line x1="32" y1="31" x2="32" y2="50" stroke="#4b2416" stroke-width="3" stroke-linecap="round"/>
+        <path d="M23 54h18" stroke="#4b2416" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="45" cy="14" r="4" fill="none" stroke="#4b2416" stroke-width="2.5"/>
+        <path d="M41 14l-5 4" stroke="#4b2416" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>`;
 
-    bars.forEach((bar, index) => {
+    function createStops() {
+      stops.forEach((stop, index) => {
+        const el = document.createElement("div");
+        el.className = "stop";
+        el.id = "stop-" + index;
+        el.style.left = stop.x + "%";
+        el.style.top = stop.y + "%";
+        el.innerHTML = `
+          <button onclick="openStop(${index})" aria-label="Open ${stop.name}">
+            <div class="marker">
+              ${martiniSVG}
+              <span class="number">${String(index + 1).padStart(2, "0")}</span>
+            </div>
+            <div class="stop-name">${stop.name}</div>
+          </button>
+        `;
+        map.appendChild(el);
+      });
+    }
 
-        const div = document.createElement("div");
-        div.classList.add("bar");
+    function render() {
+      if (current < 0) current = 0;
+      if (current > stops.length) current = stops.length;
 
-        if (index < currentBar) {
+      localStorage.setItem("elifCurrentStop", current);
 
-            div.classList.add("completed");
-            div.innerHTML = `
-                <h2>✅ ${bar}</h2>
-                <p>Completed</p>
-            `;
+      stops.forEach((_, index) => {
+        const el = document.getElementById("stop-" + index);
+        el.classList.remove("locked", "active", "completed");
 
-        } else if (index === currentBar) {
+        if (index < current) el.classList.add("completed");
+        else if (index === current) el.classList.add("active");
+        else el.classList.add("locked");
+      });
 
-            div.innerHTML = `
-                <h2>🍺 ${bar}</h2>
-                <p>Current stop</p>
-                <button onclick="completeBar()">Completed 🍺</button>
-            `;
+      const percent = Math.min(current, stops.length) / stops.length * 100;
+      document.getElementById("progressFill").style.width = percent + "%";
+      document.getElementById("progressText").textContent =
+        `${Math.min(current, stops.length)} / ${stops.length} stops survived`;
 
-        } else {
+      const totalLength = routeDone.getTotalLength();
+      routeDone.style.strokeDasharray = `${totalLength} ${totalLength}`;
+      routeDone.style.strokeDashoffset = totalLength - (totalLength * percent / 100);
 
-            div.classList.add("locked");
-            div.innerHTML = `
-                <h2>🔒 ${bar}</h2>
-            `;
-        }
+      document.getElementById("finished").style.display = current >= stops.length ? "block" : "none";
 
-        container.appendChild(div);
+      const active = document.getElementById("stop-" + Math.min(current, stops.length - 1));
+      if (active && !modal.classList.contains("show")) {
+        active.scrollIntoView({ block: "center", behavior: "smooth" });
+      }
+    }
+
+    function openStop(index) {
+      if (index > current) return;
+      selectedIndex = index;
+      const stop = stops[index];
+
+      document.getElementById("modalNumber").textContent = `Stop ${index + 1} of ${stops.length}`;
+      document.getElementById("modalName").textContent = stop.name;
+      document.getElementById("modalAddress").textContent = stop.address;
+      document.getElementById("modalTask").textContent = stop.task;
+      document.getElementById("mapsLink").href =
+        "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(stop.name + " " + stop.address);
+
+      modal.classList.add("show");
+    }
+
+    function closeModal() {
+      modal.classList.remove("show");
+    }
+
+    function outsideClose(event) {
+      if (event.target === modal) closeModal();
+    }
+
+    function completeCurrent() {
+      if (selectedIndex === current && current < stops.length) {
+        current++;
+        closeModal();
+        render();
+      } else {
+        closeModal();
+      }
+    }
+
+    function goBack() {
+      current = Math.max(0, current - 1);
+      render();
+    }
+
+    function goNext() {
+      current = Math.min(stops.length, current + 1);
+      render();
+    }
+
+    function restartCrawl() {
+      const okay = confirm("Absolute units go again? This will reset the crawl.");
+      if (!okay) return;
+      current = 0;
+      selectedIndex = 0;
+      closeModal();
+      render();
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
     });
 
-    if (currentBar >= bars.length) {
-        document.getElementById("finished").style.display = "block";
-    }
-}
-
-function completeBar() {
-    currentBar++;
-    localStorage.setItem("currentBar", currentBar);
-    renderBars();
-}
-
-renderBars();
-
-</script>
-
+    createStops();
+    render();
+  </script>
 </body>
 </html>
