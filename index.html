@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ELIF'S BDAY CRAWL</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -31,16 +31,13 @@
     }
 
     body {
-      margin: 0;
-      min-height: 100vh;
-      background:
-        radial-gradient(circle at 15% 8%, rgba(214,170,63,.18), transparent 20%),
-        radial-gradient(circle at 90% 20%, rgba(125,158,168,.18), transparent 22%),
-        linear-gradient(180deg, var(--cream), #efe3cd);
-      color: var(--brown);
-      font-family: Inter, system-ui, sans-serif;
-      overflow-x: hidden;
-    }
+  margin: 0;
+  min-height: 100vh;
+  background: var(--cream);
+  color: var(--brown);
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  overflow-x: hidden;
+}
 
     .paper {
       position: relative;
@@ -83,19 +80,19 @@
     }
 
     h1 {
-      margin: 0;
-      font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: clamp(42px, 10vw, 94px);
-      line-height: .88;
-      letter-spacing: .055em;
-      color: var(--yellow-light);
-      text-shadow:
-        2px 2px 0 var(--brown),
-        -2px 2px 0 var(--brown),
-        2px -2px 0 var(--brown),
-        -2px -2px 0 var(--brown),
-        0 8px 0 rgba(75,36,22,.08);
-    }
+  margin: 0;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-size: clamp(38px, 9vw, 82px);
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  font-weight: 800;
+  color: var(--yellow-light);
+  text-shadow:
+    1.5px 1.5px 0 var(--brown),
+    -1.5px 1.5px 0 var(--brown),
+    1.5px -1.5px 0 var(--brown),
+    -1.5px -1.5px 0 var(--brown);
+}
 
     .subtitle {
       margin: 12px auto 0;
@@ -154,22 +151,21 @@
     }
 
     .progress-wrap {
-      position: relative;
-      z-index: 2;
-      width: min(620px, 92%);
-      margin: 12px auto 18px;
-      border: 1.5px solid var(--brown);
-      border-radius: 999px;
-      overflow: hidden;
-      background: var(--foam);
-      box-shadow: none;
+  position: relative;
+  z-index: 2;
+  width: min(620px, 92%);
+  margin: 12px auto 18px;
+  border: 1.5px solid var(--brown);
+  border-radius: 0;
+  overflow: hidden;
+  background: var(--foam);
     }
 
     .progress-fill {
       width: 0%;
       height: 14px;
-      background: linear-gradient(90deg, var(--yellow), var(--blue));
-      transition: width .35s ease;
+      background: var(--yellow);
+      transition: width 0.35s ease;
     }
 
     .progress-text {
@@ -273,7 +269,7 @@
     }
 
     .stop-name {
-      font-family: "Cormorant Garamond", Georgia, serif;
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
       font-weight: 700;
       font-size: 19px;
       line-height: 1;
@@ -384,17 +380,15 @@
     }
 
     .card {
-      position: relative;
-      width: min(460px, 96vw);
-      background:
-        radial-gradient(circle at 12% 15%, rgba(214,170,63,.22), transparent 28%),
-        linear-gradient(180deg, var(--foam), var(--cream));
-      border: 2px solid var(--brown);
-      border-radius: 24px;
-      padding: 26px 22px 20px;
-      box-shadow: 0 24px 80px rgba(75,36,22,.35);
-      text-align: center;
-    }
+  position: relative;
+  width: min(460px, 96vw);
+  background: var(--foam);
+  border: 2px solid var(--brown);
+  border-radius: 0;
+  padding: 26px 22px 20px;
+  box-shadow: 0 24px 80px rgba(75, 36, 22, 0.28);
+  text-align: center;
+}
 
     .close {
       position: absolute;
@@ -426,16 +420,20 @@
       text-transform: uppercase;
     }
 
-    .address, .task {
-      line-height: 1.5;
-      font-size: 15px;
-      margin: 6px 0 0;
-    }
+   .address {
+  line-height: 1.45;
+  font-size: 12px;
+  margin: 6px 0 0;
+  color: rgba(75, 36, 22, 0.55);
+}
 
-    .task {
-      font-weight: 800;
-      font-size: 17px;
-    }
+.task {
+  line-height: 1.5;
+  font-weight: 800;
+  font-size: 17px;
+  margin: 6px 0 0;
+  color: var(--brown);
+}
 
     .card-actions {
       display: grid;
@@ -444,28 +442,42 @@
       margin-top: 22px;
     }
 
-    .primary, .secondary {
-      border: 1.5px solid var(--brown);
-      border-radius: 999px;
-      padding: 12px 14px;
-      font-weight: 900;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      cursor: pointer;
-      text-decoration: none;
-      display: block;
-      color: var(--brown);
-      box-shadow: none;
-    }
-
-    .primary {
-      background: var(--yellow-light);
-    }
-
     .secondary {
-      background: var(--foam);
-    }
+  border: 0;
+  background: transparent;
+  padding: 4px 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  color: rgba(75, 36, 22, 0.65);
+  box-shadow: none;
+}
 
+.secondary:hover {
+  color: var(--brown);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.primary {
+  border: 1.5px solid var(--brown);
+  border-radius: 0;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  color: var(--brown);
+  background: var(--yellow-light);
+  box-shadow: none;
+  }
     .finished {
       display: none;
       position: relative;
@@ -532,8 +544,8 @@
 
     <header>
       <div class="eyebrow">one night · seventeen stops · no mercy</div>
-      <h1>ELIF'S<br>BDAY CRAWL</h1>
-      <p class="subtitle">Tap the glowing stop, reveal the task, complete it, and unlock the next disaster.</p>
+      <h1>ELIF'S<br>B-DAY CRAWL</h1>
+      <p class="subtitle">Tap the bar, reveal the task, complete it, and unlock the next disaster.</p>
     </header>
 
     <div class="top-controls">
@@ -573,7 +585,7 @@
 
     <section class="finished" id="finished">
       <h2>Prague Conquered</h2>
-      <p>All roads finished at Bullerbyn. Elif's birthday crawl has been survived.</p>
+      <p> Elif's birthday crawl has been survived.</p>
     </section>
   </div>
 
