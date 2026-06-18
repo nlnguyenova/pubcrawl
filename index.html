@@ -21,7 +21,44 @@
       --burgundy: #6d1722;
       --shadow: rgba(75, 36, 22, 0.22);
     }
+.lock-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 22px;
+  text-align: center;
+  padding: 32px 18px;
+  background: var(--cream);
+}
 
+.lock-title-image {
+  display: block;
+  width: min(680px, 92vw);
+  height: auto;
+  margin: 0 auto;
+}
+
+.lock-small-text {
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(75, 36, 22, 0.65);
+}
+
+.countdown {
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-size: clamp(38px, 10vw, 88px);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--brown);
+}
+
+.locked-hidden {
+  display: none;
+}
     * {
       box-sizing: border-box;
     }
@@ -533,7 +570,14 @@
 
 <body>
   <div class="paper">
+<section id="lockScreen" class="lock-screen">
+  <img src="title.png" alt="ELIF'S BDAY CRAWL" class="lock-title-image">
 
+  <div class="lock-small-text">crawl unlocks in</div>
+  <div id="countdown" class="countdown">00:00:00</div>
+</section>
+    <div id="crawlContent" class="crawl-content locked-hidden">
+      
     <header>
       <div class="eyebrow">one night · seventeen stops · no mercy</div>
       <img src="bday.png" alt="ELIF'S BDAY CRAWL" class="title-image">
@@ -743,8 +787,68 @@
       if (e.key === "Escape") closeModal();
     });
 
-    createStops();
+    function updateCountdown() {
+  const firstBarUnlockTime = new Date("2026-06-27T12:00:00").getTime();
+  const fullCrawlUnlockTime = new Date("2026-06-27T18:00:00").getTime();
+
+  const now = new Date().getTime();
+
+  const lockScreen = document.getElementById("lockScreen");
+  const crawlContent = document.getElementById("crawlContent");
+  const countdown = document.getElementById("countdown");
+
+  if (now < firstBarUnlockTime) {
+    lockScreen.style.display = "grid";
+    crawlContent.classList.add("locked-hidden");
+
+    countdown.textContent = formatCountdown(firstBarUnlockTime - now);
+    return;
+  }
+
+  if (now >= firstBarUnlockTime && now < fullCrawlUnlockTime) {
+    lockScreen.style.display = "none";
+    crawlContent.classList.remove("locked-hidden");
+
+    // Show only the first stop
+    current = Math.min(current, 0);
     render();
+
+    stops.forEach((stop, index) => {
+      const el = document.getElementById("stop-" + index);
+      if (index > 0) {
+        el.classList.add("locked");
+        el.style.display = "none";
+      }
+    });
+
+    return;
+  }
+
+  // Full crawl unlocked
+  lockScreen.style.display = "none";
+  crawlContent.classList.remove("locked-hidden");
+
+  stops.forEach((stop, index) => {
+    const el = document.getElementById("stop-" + index);
+    el.style.display = "block";
+  });
+
+  render();
+}
+
+function formatCountdown(distance) {
+  const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((distance / (1000 * 60)) % 60);
+  const seconds = Math.floor((distance / 1000) % 60);
+
+  return `${days}d ${String(hours).padStart(2, "0")}h ${String(minutes).padStart(2, "0")}m ${String(seconds).padStart(2, "0")}s`;
+}
+   createStops();
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+    
   </script>
 </body>
 </html>
