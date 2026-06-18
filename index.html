@@ -59,6 +59,27 @@
 .locked-hidden {
   display: none;
 }
+
+.mini-unlock-timer {
+  position: relative;
+  z-index: 4;
+  width: min(620px, 92%);
+  margin: 8px auto 24px;
+  padding: 14px 12px;
+  text-align: center;
+  border-top: 1px solid rgba(75, 36, 22, 0.22);
+  border-bottom: 1px solid rgba(75, 36, 22, 0.22);
+}
+
+.mini-countdown {
+  margin-top: 6px;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-size: clamp(22px, 6vw, 42px);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--brown);
+}
+
     * {
       box-sizing: border-box;
     }
@@ -573,7 +594,7 @@
 <section id="lockScreen" class="lock-screen">
   <img src="bday.png" alt="ELIF'S BDAY CRAWL" class="lock-title-image">
 
-  <div class="lock-small-text">crawl unlocks in</div>
+  <div id="countdownLabel" class="lock-small-text">first stop unlocks in</div>
   <div id="countdown" class="countdown">00:00:00</div>
 </section>
     <div id="crawlContent" class="crawl-content locked-hidden">
@@ -699,7 +720,7 @@
       });
     }
 
-    function render() {
+    function render(scrollToActive = true) {
       if (current < 0) current = 0;
       if (current > stops.length) current = stops.length;
 
@@ -726,7 +747,7 @@
       document.getElementById("finished").style.display = current >= stops.length ? "block" : "none";
 
       const active = document.getElementById("stop-" + Math.min(current, stops.length - 1));
-      if (active && !modal.classList.contains("show")) {
+      if (scrollToActive && active && !modal.classList.contains("show")) {
         active.scrollIntoView({ block: "center", behavior: "smooth" });
       }
     }
@@ -788,88 +809,125 @@
     });
 
     function updateCountdown() {
-  const firstBarUnlockTime = new Date("2026-06-19T01:18:00").getTime();
-  const fullCrawlUnlockTime = new Date("2026-06-19T01:20:00").getTime();
+      const firstBarUnlockTime = new Date("2026-06-19T01:18:00").getTime();
+      const fullCrawlUnlockTime = new Date("2026-06-19T01:20:00").getTime();
 
-  const now = new Date().getTime();
+      const now = Date.now();
 
-  const lockScreen = document.getElementById("lockScreen");
-  const crawlContent = document.getElementById("crawlContent");
-  const countdown = document.getElementById("countdown");
+      const lockScreen = document.getElementById("lockScreen");
+      const crawlContent = document.getElementById("crawlContent");
+      const countdown = document.getElementById("countdown");
+      const countdownLabel = document.getElementById("countdownLabel");
 
- if (now < firstBarUnlockTime) {
-  const distance = firstBarUnlockTime - now;
+      if (now < firstBarUnlockTime) {
+        lockScreen.style.display = "grid";
+        lockScreen.style.pointerEvents = "auto";
 
-  lockScreen.style.display = "grid";
-  lockScreen.style.pointerEvents = "auto";
+        crawlContent.classList.add("locked-hidden");
+        crawlContent.style.display = "none";
 
-  crawlContent.classList.add("locked-hidden");
-  crawlContent.style.display = "none";
+        countdownLabel.textContent = "first stop unlocks in";
+        countdown.textContent = formatCountdown(firstBarUnlockTime - now);
+        return;
+      }
 
-  countdownLabel.textContent = "first stop unlocks in";
-  countdown.textContent = formatCountdown(distance);
+      if (now >= firstBarUnlockTime && now < fullCrawlUnlockTime) {
+        lockScreen.style.display = "none";
+        lockScreen.style.pointerEvents = "none";
 
-  return;
-}
+        crawlContent.classList.remove("locked-hidden");
+        crawlContent.style.display = "block";
 
-    countdown.textContent = formatCountdown(firstBarUnlockTime - now);
-    return;
-  }
+        document.body.style.overflowY = "auto";
+        document.documentElement.style.overflowY = "auto";
 
-  if (now >= firstBarUnlockTime && now < fullCrawlUnlockTime) {
-    lockScreen.style.display = "none";
-    crawlContent.classList.remove("locked-hidden");
+        current = 0;
+        localStorage.setItem("elifCurrentStop", current);
 
-  // Show only the first stop
-current = 0;
+        if (!window.firstBarRendered) {
+          render(true);
+          window.firstBarRendered = true;
+        }
 
-if (!window.firstBarRendered) {
-  render();
-  window.firstBarRendered = true;
-}
+        stops.forEach((stop, index) => {
+          const el = document.getElementById("stop-" + index);
+          if (!el) return;
 
-stops.forEach((stop, index) => {
-  const el = document.getElementById("stop-" + index);
+          if (index === 0) {
+            el.style.display = "block";
+          } else {
+            el.classList.add("locked");
+            el.style.display = "none";
+          }
+        });
 
-  if (index === 0) {
-    el.style.display = "block";
-  } else {
-    el.classList.add("locked");
-    el.style.display = "none";
-  }
-});
+        let miniTimer = document.getElementById("miniUnlockTimer");
 
-    return;
-  }
+        if (!miniTimer) {
+          miniTimer = document.createElement("div");
+          miniTimer.id = "miniUnlockTimer";
+          miniTimer.className = "mini-unlock-timer";
+          miniTimer.innerHTML = `
+            <div class="lock-small-text">full crawl unlocks in</div>
+            <div id="miniCountdown" class="mini-countdown"></div>
+          `;
 
-  // Full crawl unlocked
-window.firstBarRendered = false;
+          const progressText = document.getElementById("progressText");
+          progressText.insertAdjacentElement("afterend", miniTimer);
+        }
 
-lockScreen.style.display = "none";
-lockScreen.style.pointerEvents = "none";
+        const miniCountdown = document.getElementById("miniCountdown");
+        if (miniCountdown) {
+          miniCountdown.textContent = formatCountdown(fullCrawlUnlockTime - now);
+        }
 
-crawlContent.classList.remove("locked-hidden");
-crawlContent.style.display = "block";
+        return;
+      }
 
-stops.forEach((stop, index) => {
-  const el = document.getElementById("stop-" + index);
-  el.style.display = "block";
-});
+      lockScreen.style.display = "none";
+      lockScreen.style.pointerEvents = "none";
 
-render();
-}
+      crawlContent.classList.remove("locked-hidden");
+      crawlContent.style.display = "block";
 
-function formatCountdown(distance) {
-  const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((distance / (1000 * 60)) % 60);
-  const seconds = Math.floor((distance / 1000) % 60);
+      document.body.style.overflowY = "auto";
+      document.documentElement.style.overflowY = "auto";
 
-  return `${days}d ${String(hours).padStart(2, "0")}h ${String(minutes).padStart(2, "0")}m ${String(seconds).padStart(2, "0")}s`;
-}
-   createStops();
-updateCountdown();
-setInterval(updateCountdown, 1000);
+      stops.forEach((stop, index) => {
+        const el = document.getElementById("stop-" + index);
+        if (!el) return;
+        el.style.display = "block";
+      });
+
+      const miniTimer = document.getElementById("miniUnlockTimer");
+      if (miniTimer) {
+        miniTimer.remove();
+      }
+
+      if (!window.fullCrawlRendered) {
+        window.firstBarRendered = false;
+        render(true);
+        window.fullCrawlRendered = true;
+      } else {
+        render(false);
+      }
+    }
+
+    function formatCountdown(distance) {
+      if (distance <= 0) {
+        return "00d 00h 00m 00s";
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((distance / (1000 * 60)) % 60);
+      const seconds = Math.floor((distance / 1000) % 60);
+
+      return `${days}d ${String(hours).padStart(2, "0")}h ${String(minutes).padStart(2, "0")}m ${String(seconds).padStart(2, "0")}s`;
+    }
+    createStops();
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
 
     
   </script>
