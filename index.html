@@ -820,31 +820,44 @@
     lockScreen.style.display = "none";
     crawlContent.classList.remove("locked-hidden");
 
-    // Show only the first stop
-    current = Math.min(current, 0);
-    render();
+    // Show only the first stop, but do not keep re-rendering every second
+current = 0;
+localStorage.setItem("elifCurrentStop", current);
 
-    stops.forEach((stop, index) => {
-      const el = document.getElementById("stop-" + index);
-      if (index > 0) {
-        el.classList.add("locked");
-        el.style.display = "none";
-      }
+if (!window.firstBarRendered) {
+  render();
+  window.firstBarRendered = true;
+}
+
+stops.forEach((stop, index) => {
+  const el = document.getElementById("stop-" + index);
+
+  if (index === 0) {
+    el.style.display = "block";
+  } else {
+    el.classList.add("locked");
+    el.style.display = "none";
+  }
     });
 
     return;
   }
 
   // Full crawl unlocked
-  lockScreen.style.display = "none";
-  crawlContent.classList.remove("locked-hidden");
+window.firstBarRendered = false;
 
-  stops.forEach((stop, index) => {
-    const el = document.getElementById("stop-" + index);
-    el.style.display = "block";
-  });
+lockScreen.style.display = "none";
+lockScreen.style.pointerEvents = "none";
 
-  render();
+crawlContent.classList.remove("locked-hidden");
+crawlContent.style.display = "block";
+
+stops.forEach((stop, index) => {
+  const el = document.getElementById("stop-" + index);
+  el.style.display = "block";
+});
+
+render();
 }
 
 function formatCountdown(distance) {
