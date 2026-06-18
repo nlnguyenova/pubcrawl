@@ -820,9 +820,8 @@
     lockScreen.style.display = "none";
     crawlContent.classList.remove("locked-hidden");
 
-    // Show only the first stop
+  // Show only the first stop
 current = 0;
-localStorage.setItem("elifCurrentStop", current);
 
 if (!window.firstBarRendered) {
   render();
@@ -838,7 +837,7 @@ stops.forEach((stop, index) => {
     el.classList.add("locked");
     el.style.display = "none";
   }
-    });
+});
 
     return;
   }
