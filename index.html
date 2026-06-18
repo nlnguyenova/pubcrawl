@@ -797,9 +797,20 @@
   const crawlContent = document.getElementById("crawlContent");
   const countdown = document.getElementById("countdown");
 
-  if (now < firstBarUnlockTime) {
-    lockScreen.style.display = "grid";
-    crawlContent.classList.add("locked-hidden");
+ if (now < firstBarUnlockTime) {
+  const distance = firstBarUnlockTime - now;
+
+  lockScreen.style.display = "grid";
+  lockScreen.style.pointerEvents = "auto";
+
+  crawlContent.classList.add("locked-hidden");
+  crawlContent.style.display = "none";
+
+  countdownLabel.textContent = "first stop unlocks in";
+  countdown.textContent = formatCountdown(distance);
+
+  return;
+}
 
     countdown.textContent = formatCountdown(firstBarUnlockTime - now);
     return;
